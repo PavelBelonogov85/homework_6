@@ -117,6 +117,7 @@ data class Post(
 object WallService {
     private var posts = emptyArray<Post>()
     private var currentId: Int = 0
+    private var wallComments = emptyArray<Comment>()
 
     fun add(post: Post): Post { /* добавление нового поста с присвоением нового Id */
         currentId += 1
