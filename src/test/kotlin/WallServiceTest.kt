@@ -20,7 +20,7 @@ class WallServiceTest {
 
         newPost = WallService.add(newPost)
 
-        assertEquals(1, newPost.id)
+        assertEquals(WallService.getCurrentId(), newPost.id)
     }
 
     @Test
@@ -64,4 +64,48 @@ class WallServiceTest {
 
         assertEquals(false, WallService.update(newPost))
     }
+
+
+    @Test(expected = PostNotFoundException::class)
+    fun shouldThrow() {
+        // здесь код с вызовом функции, которая должна выкинуть PostNotFoundException:
+
+        val calendar = Calendar.getInstance()
+        val timestamp = calendar.timeInMillis
+
+        var newPost: Post = Post(
+            ownerId = 112,
+            date = timestamp,
+            text = "Новый текст, новый текст!!",
+            postType = PostTypes.POST,
+            donut = Donut(false, 0, "", false, DonutEditModes.ALL),
+            copyright = null
+        )
+        WallService.add(newPost)
+        //val newComm = WallService.createComment(1, Comment(12,"коммент к последнему посту"))
+        val newComm = WallService.createComment(WallService.getCurrentId()+1, Comment(123,"коммент к несуществующему посту"))
+    }
+
+    @Test
+    fun shouldGetNormalComment() {
+        // здесь код с вызовом функции, которая должна выкинуть PostNotFoundException:
+
+        val calendar = Calendar.getInstance()
+        val timestamp = calendar.timeInMillis
+
+        var newPost: Post = Post(
+            ownerId = 112,
+            date = timestamp,
+            text = "Новый текст, новый текст!!",
+            postType = PostTypes.POST,
+            donut = Donut(false, 0, "", false, DonutEditModes.ALL),
+            copyright = null
+        )
+        WallService.add(newPost)
+        val newComm = WallService.createComment(WallService.getCurrentId(), Comment(12,"коммент к последнему посту"))
+        //val newComm = WallService.createComment(WallService.getCurrentId()+1, Comment(123,"коммент к несуществующему посту"))
+
+        assertEquals("коммент к последнему посту", newComm.text)
+    }
+
 }
